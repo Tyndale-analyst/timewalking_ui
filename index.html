@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>프롤로그1</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      width: 100vw;
+      background-color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Arial', sans-serif;
+    }
+
+    .container {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+      aspect-ratio: 9 / 19.5;
+      background-size: cover;
+      background-position: center;
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1;
+    }
+
+    .overlay.lighten {
+      background-color: rgba(0, 0, 0, 0.3);
+    }
+
+    .overlay.brightest {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .text-box {
+      position: absolute;
+      top: 55%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(255, 255, 255, 0.85);
+      padding: 20px;
+      border-radius: 20px;
+      width: 80%;
+      max-width: 300px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.6;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      z-index: 2;
+    }
+
+    .character {
+      position: absolute;
+      width: 120px;
+      z-index: 3;
+    }
+
+    .character.screen2 {
+      top: 30%;
+      right: 5%;
+    }
+
+    .character.screen3 {
+      top: 13%;
+      left: 60%;
+      right: auto;
+    }
+
+    .home-indicator {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 5px;
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 3px;
+      z-index: 2;
+    }
+
+    .button {
+      position: absolute;
+      bottom: 140px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #7a4fff;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 20px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 4;
+    }
+
+    .menu-title {
+      position: absolute;
+      top: 40px;
+      left: 20px;
+      padding: 6px 14px;
+      background-color: white;
+      border: 5px solid #bb86fc;
+      border-radius: 20px;
+      font-weight: bold;
+      z-index: 3;
+    }
+
+    .menu-card-carousel {
+      position: absolute;
+      bottom: 150px;
+      left: 0;
+      width: 150%;
+      padding: 0 20px;
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      z-index: 3;
+      padding-bottom: 20px; /* ← 스크롤바가 아래로 조금 내려감 */
+    }
+
+    .menu-card-carousel img {
+      border-radius: 20px;
+      height: 100px;
+    }
+
+    .menu-info {
+      position: absolute;
+      bottom: 60px;
+      left: 20px;
+      right: 20px;
+      background-color: white;
+      border-radius: 20px;
+      padding: 15px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 3;
+    }
+
+    .start-button {
+      background-color: #7a4fff;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 16px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* 지도 이미지 스타일 */
+    .menu-map {
+      position: absolute;
+      top: 200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      max-width: 320px;
+      z-index: 2; /* overlay 위, 다른 UI 아래 */
+      pointer-events: none;
+    }
+
+    /* menuScreen에 어두운 오버레이 */
+    #menuScreen::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1;
+    }
+    .map-point {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background-color: #a259ff;
+  border-radius: 50%;
+  z-index: 4;
+  transform: translate(-50%, -50%);
+}
+
+.location-badge {
+  position: absolute;
+  background-color: white;
+  border: 2px solid #a259ff;
+  border-radius: 12px;
+  padding: 6px 12px;
+  font-weight: bold;
+  font-size: 13px;
+  color: #333;
+  z-index: 4;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+.clicked {
+  box-shadow: 0 0 12px 4px rgba(122, 79, 255, 0.6);
+  transform: scale(1.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+  </style>
+</head>
+<body>
+  <div class="container" id="screen1" style="background-image: url('images/v11_818.jpg');">
+    <div class="screen">
+      <div class="overlay"></div>
+      <div class="text-box">
+        “시간 속에 잠든 북촌의 기억이<br>깨어납니다…”
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+  </div>
+
+  <div class="container" id="screen2" style="display:none; background-image: url('images/v11_818.jpg');">
+    <div class="screen">
+      <div class="overlay lighten"></div>
+      <img src="images/프롤로그 2,3_ 캐릭터.png" class="character screen2" alt="캐릭터">
+      <div class="text-box">
+        “안녕하세요.<br>저는 북촌을 수호하는 기록지기예요.<br>오래전 왕실의 삶이 담긴<br>이 골목들엔,<br>지금도 숨겨진 이야기들이<br>살아 숨 쉬고 있어요.”
+      </div>
+      <div class="home-indicator"></div>
+    </div>
+  </div>
+
+  <div class="container" id="screen3" style="display:none; background-image: url('images/v11_818.jpg');">
+    <div class="screen">
+      <div class="overlay brightest"></div>
+      <img src="images/프롤로그 2,3_ 캐릭터.png" class="character screen3" alt="캐릭터">
+      <div class="text-box" style="top: 38%;">
+        “이제부터 당신은<br>‘기록자’가 되어<br>경근당, 옥첩당, 중앙학교 등<br>북촌의 주요 장소를<br>관찰하고, 기록하고,<br>체험한 증표로<br>캐릭터를 수집하게 됩니다.”
+      </div>
+      <div class="text-box" style="top: 58%;">
+        “북촌의 실감 기록,<br>당신의 눈으로 직접 확인하고<br>남겨주세요.<br>준비되셨나요?”
+      </div>
+      <button class="button" onclick="goToARScreen()">지금 시작하기</button>
+      <div class="home-indicator"></div>
+    </div>
+  </div>
+
+  <div class="container" id="menuScreen" style="display:none; background-image: url('images/프롤로그1_ BG.png'); background-size: cover;">
+    <div class="screen">
+      <img id="backBtn" src="images/뒤로가기.png" alt="뒤로가기 버튼"
+      style="position: absolute; top: 20px; left: 20px; width: 36px; height: 36px; z-index: 10; cursor: pointer;" />
+      <!-- 지도 이미지 -->
+      <img src="images/Meun_ BG.png" alt="서울 지도" class="menu-map" />
+      <!-- 북촌 포인트와 말풍선 -->
+       <div class="map-point" style="top: 52%; left: 54%;"></div>
+       <div class="map-point" style="top: 45%; left: 48%;"></div>
+       <div class="map-point" style="top: 35%; left: 54%;"></div>
+       <div class="map-point" style="top: 52%; left: 34%;"></div>
+       <div class="map-point" style="top: 42%; left: 54%;"></div>
+       <div class="map-point" style="top: 52%; left: 40%;"></div>
+    
+
+      <!-- 기타 UI -->
+
+      <div class="menu-card-carousel">
+        <img src="images/Meun_ 카드형1.png" alt="card1">
+        <img src="images/Meun_ 카드형2.png" alt="card2">
+        <img src="images/Meun_ 카드형3.png" alt="card3">
+        <img src="images/Meun_ 카드형4.png" alt="card4">
+      </div>
+      <div class="menu-info">
+        <div>
+          <div><strong>북촌한옥마을</strong></div>
+          <div>★★★☆☆ (70) &nbsp; 1-4인 &nbsp; 9포인트</div>
+        </div>
+        <button class="start-button">시작하기</button>
+      </div>
+    </div>
+  </div>
+
+   <!-- ✅ 추가: screen4 (길찾기 화면) -->
+   <div class="container" id="screen4" style="display: none; background-image: url('images/프롤로그1_ BG.png'); background-size: cover; background-position: center;">
+    <div class="screen">
+      <div class="overlay"></div>
+      <img src="images/뒤로가기.png" id="backToScreen3" style="position: absolute; top: 20px; left: 20px; width: 36px; z-index: 5; cursor: pointer;" />
+      <div style="position: absolute; top: 100px; left: 50%; transform: translateX(-50%); z-index: 2;">
+        <img src="images/북촌지도.png" style="width: 350px;" />
+      </div>
+      <div style="position: absolute; bottom: 180px; left: 50%; transform: translateX(-50%); z-index: 2;">
+        <img src="images/북촌 길찾기.png" style="width: 350px;" />
+      </div>
+      <div style="
+        position: absolute;
+        bottom: 60px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(255, 255, 255, 0.95);
+        padding: 20px 28px;
+        border-radius: 24px;
+        font-size: 16px;
+        font-weight: bold;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        z-index: 6;
+        width: 85%;
+        max-width: 340px;
+        justify-content: space-between;">
+        <span style="color: #111; line-height: 1.5;">
+          가회동 백인제 가옥<br>소요 시간 10분
+        </span>
+        <button onclick="goToARScreen()" style="
+          background: #5f3dc4;
+          color: white;
+          border: none;
+          padding: 12px 20px;
+          border-radius: 20px;
+          font-weight: bold;
+          font-size: 15px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.2);">
+          이동하기
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- AR 체험 화면 -->
+<div class="container" id="arScreen" style="display:none; background-image: url('images/AR화면BG.png'); background-size: cover;">
+    <div class="screen"><!-- 지도 아이콘 (좌측 상단) -->
+    <!-- 지도 버튼 -->
+<div id="mapBtnWrapper" style="position: absolute; top: 20px; left: 20px; z-index: 11;">
+  <img id="mapToggleBtn" src="images/지도 버튼.png" alt="지도 버튼"
+       style="width: 40px; height: 40px; cursor: pointer;" />
+</div>
+
+
+<!-- 미니 지도 박스 -->
+<div id="miniMapBox" style="
+  position: absolute;
+  top: 10px;
+  left: 50px;
+  display: none;
+  z-index: 10;
+  width: 200px;
+  height: auto
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  border: none;
+">
+  <img src="images/상단 지도.png" alt="미니 지도" style="width: 150%; display: block;" />
+</div>
+
+
+
+
+<div id="arBackgroundClickArea" style="
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* 다른 UI보다 아래지만 텍스트 박스/캐릭터보다 위 */
+"></div>
+
+
+      <!-- 좌측 상단 아이콘 -->
+      <div style="position: absolute; top: 20px; left: 20px; width: 80px; height: 100px; background: url('images/스크린샷 2025-04-14 161137 1.png') no-repeat center/contain; border-radius: 50%; z-index: 2;"></div>
+      
+      <img id="arCharacter" src="images/AR 시작화면.png" alt="AR 캐릭터"
+      style="position: absolute; bottom: 250px; right: 170px; width: 120px; z-index: 12; transition: opacity 0.5s, transform 0.5s;" />
+      <img id="arPeople" src="images/ar 캐릭터_ 사람.png" alt="사람 캐릭터"
+     style="position: absolute; bottom: 290px; left: 60px; width: 250px; opacity: 0; z-index: 2; transition: opacity 0.5s;" />
+
+ 
+  
+      <!-- 텍스트 박스 -->
+      <div style="
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        font-size: 15px;
+        line-height: 1.6;
+        border-bottom-left-radius: 30px;
+        border-bottom-right-radius: 30px;
+        z-index: 2;
+        
+      ">
+        <!-- 텍스트 박스 + 버튼 -->
+<!-- 새 텍스트 박스 전체 -->
+<div style="
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  z-index: 2;
+">
+ 
+  </div>
+
+  <!-- 전체 설명 텍스트 (기본은 숨김) -->
+  <div id="arFullText" style="display: none; padding: 0 20px 20px; font-size: 15px; line-height: 1.6;">
+    이 집은 사랑채와 안채로 구분되어 있어요.
+    사랑채는 주로 남자 주인이 거주하는 공간으로,<br>
+    안채와는 내외담으로 분리되어 있죠.<br>
+    사랑채에서 남성들이 중요한 활동을 하고,<br>
+    안채는 가족이 모여 살고 예식이나 농사일을 하던 공간입니다.
+  </div>
+
+  <!-- 토글 버튼 -->
+  <div style="text-align: center; padding-bottom: 10px;">
+    <button onclick="toggleText()" id="toggleBtn"
+    style="
+      position: absolute;
+      bottom: 10px;
+      right: 20px;
+      background: #fcfbfb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      width: 32px;
+      height: 32px;
+      font-size: 20px;
+      cursor: pointer;
+      z-index: 3;
+    ">
+    🔼
+  </button>
+  
+  </div>
+</div>
+
+    </div>
+  </div>
+  <!-- 챗봇 화면 -->
+<div class="container" id="chatbotScreen" style="display: none; background-image: url('images/AR화면BG.png'); background-size: cover;">
+  <div class="screen">
+    <!-- 뒤로가기 버튼 -->
+    <img src="images/뒤로가기.png" id="chatBackBtn"
+         style="position:absolute; top: 20px; left: 20px; width: 36px; height: 36px; z-index: 5; cursor: pointer;" />
+
+    <!-- 캐릭터 이미지 -->
+    <img src="images/AR 캐릭터.png" alt="챗봇 캐릭터"
+         style="position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%); width: 160px; z-index: 3;" />
+
+    <!-- 말풍선 -->
+    <div style="position: absolute; bottom: 350px; left: 60px; background: white; border-radius: 20px; padding: 10px 15px; font-weight: bold; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+      궁금한 게 생겼어?<br>뭐든지 물어봐!
+    </div>
+
+    <!-- 입력창 -->
+    <div style="position: absolute; bottom: 30px; left: 10px; right: 10px; background: white; border-radius: 20px; padding: 10px 15px; display: flex; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.2);">
+      <input id="chatInput" type="text" placeholder="메시지를 입력하세요." style="flex: 1; border: none; outline: none; font-size: 14px;" />
+      <img src="images/보내기아이콘.png" style="width: 50px; margin-left: 10px; cursor: pointer;" />
+      <img src="images/음성인식.png" style="width: 24px; margin-left: 10px; cursor: pointer;" />
+    </div>
+  </div>
+</div>
+<!-- 수호령 수집 화면 UI 구성 -->
+<div class="container" id="collectionScreen" style="display: none; background-color: #fdfcff;">
+  <div class="screen">
+    <!-- 뒤로가기 버튼 -->
+    <img src="images/뒤로가기.png" id="collectionBackBtn"
+         style="position:absolute; top: 20px; left: 20px; width: 36px; height: 36px; z-index: 5; cursor: pointer;" />
+
+    <!-- 상단 타이틀 -->
+    <div style="text-align: center; font-weight: bold; font-size: 18px; margin-top: 80px; color: #5f3dc4;">
+      내가 수집한 수호령
+      <img src="images/호리병.png" style="width: 24px; vertical-align: middle; margin-left: 6px;" />
+    </div>
+
+    <!-- 검색창 -->
+    <div style="margin: 30px auto 10px; width: 80%; max-width: 300px; display: flex; border: 2px solid #a259ff; border-radius: 20px; overflow: hidden;">
+      <input type="text" placeholder="검색" style="flex: 1; border: none; padding: 10px; outline: none;">
+      <button style="background: #a259ff; color: white; padding: 10px 18px; border: none;">검색</button>
+    </div>
+
+    <!-- 지역 필터 -->
+    <div style="text-align: center; margin-top: 20px;">
+      <button style="background: #a259ff; color: white; padding: 6px 18px; border-radius: 16px; border: none;">북촌</button>
+    </div>
+
+    <!-- 북촌 수호령 캐릭터들 -->
+    <div style="margin: 20px auto; width: 80%; max-width: 320px; display: flex; flex-wrap: wrap; justify-content: center; gap: 14px;">
+      <img src="images/AR 캐릭터.png" style="width: 80px; height: 150px;"margin-top: 18px>
+      <img src="images/그림자1.png" style="width: 80px;">
+      <img src="images/그림자2.png" style="width: 70px;">
+      <img src="images/그림자3.png" style="width: 70px;">
+      <img src="images/그림자4.png" style="width: 70px;">
+    </div>
+
+    <!-- 경복궁 필터 -->
+    <div style="text-align: center; margin-top: 20px;">
+      <button style="background: #a259ff; color: white; padding: 6px 18px; border-radius: 16px; border: none;">경복궁</button>
+    </div>
+
+    <!-- 경복궁 수호령 캐릭터들 -->
+    <div style="margin: 20px auto 40px; width: 80%; max-width: 320px; display: flex; flex-wrap: wrap; justify-content: center; gap: 14px;">
+      <img src="images//왕.png" style="width: 70px;">
+      <img src="images/왕비.png" style="width: 70px;">
+    </div>
+  </div>
+</div>
+
+  
+  
+
+  <script>
+  
+    // menuScreen → screen1 전환
+    document.querySelector(".start-button").addEventListener("click", () => {
+      document.querySelector("#menuScreen").style.display = "none";
+      document.querySelector("#screen1").style.display = "block";
+    });
+  
+    // screen1 → screen2
+    document.querySelector("#screen1").addEventListener("click", () => {
+      document.querySelector("#screen1").style.display = "none";
+      document.querySelector("#screen2").style.display = "block";
+    });
+  
+    // screen2 → screen3
+    document.querySelector("#screen2").addEventListener("click", () => {
+      document.querySelector("#screen2").style.display = "none";
+      document.querySelector("#screen3").style.display = "block";
+    });
+
+    document.querySelector("#screen3").addEventListener("click", () => {
+      document.querySelector("#screen3").style.display = "none";
+      document.querySelector("#screen4").style.display = "block";
+    });
+
+    document.querySelector("#screen4").addEventListener("click", () => {
+      document.querySelector("#screen4").style.display = "none";
+      document.querySelector("#arScreen").style.display = "block";
+    });
+    const mapPoints = document.querySelectorAll(".map-point");
+
+mapPoints.forEach(point => {
+  point.addEventListener("click", () => {
+    // 모든 포인트에서 clicked 제거
+    mapPoints.forEach(p => p.classList.remove("clicked"));
+    
+    // 클릭한 포인트에만 추가
+    point.classList.add("clicked");
+  });
+});
+const menuCards = document.querySelectorAll(".menu-card-carousel img");
+
+menuCards.forEach(card => {
+  card.addEventListener("click", () => {
+    // 모든 카드에서 clicked 제거
+    menuCards.forEach(c => c.classList.remove("clicked"));
+    
+    // 클릭한 카드에만 clicked 추가
+    card.classList.add("clicked");
+  });
+});
+function goToARScreen() {
+  document.querySelector("#screen3").style.display = "none";
+  document.querySelector("#arScreen").style.display = "block";
+}
+let isExpanded = false;
+function toggleText() {
+  const fullText = document.getElementById("arFullText");
+  const btn = document.getElementById("toggleBtn");
+
+  isExpanded = !isExpanded;
+
+  fullText.style.display = isExpanded ? "block" : "none";
+  btn.textContent = isExpanded ? "🔽" : "🔼";
+}
+let characterClickCount = 0;
+
+document.getElementById("arBackgroundClickArea").addEventListener("click", () => {
+  const animal = document.getElementById("arCharacter");
+  const people = document.getElementById("arPeople");
+
+  if (characterClickCount === 0) {
+    // 첫 번째 클릭: 동물 캐릭터 확대
+    animal.style.opacity = "0";
+    animal.style.transform = "scale(0.9)";
+
+    setTimeout(() => {
+      animal.src = "images/AR 캐릭터.png";
+      animal.style.width = "160px";
+      animal.style.bottom = "240px";
+      animal.style.right = "120px";
+      animal.style.opacity = "1";
+      animal.style.transform = "scale(1)";
+    }, 300);
+  } else if (characterClickCount === 1) {
+    // 두 번째 클릭: 동물 작아지고 사람 등장
+    animal.style.width = "80px";
+    animal.style.bottom = "200px";
+    animal.style.right = "40px";
+    people.style.opacity = "1"; // ← 이게 조건의 핵심이 됨
+  }
+
+  // ✅ 조건: 사람 캐릭터의 opacity가 1일 때만 수호령 화면으로 이동
+  const peopleVisible = window.getComputedStyle(people).opacity === "1";
+
+  if (peopleVisible) {
+    console.log("✅ 사람 캐릭터 등장 상태 - 수호령 화면으로 이동!");
+    document.getElementById("arScreen").style.display = "none";
+    document.getElementById("collectionScreen").style.display = "block";
+  } else {
+    console.log("⛔ 아직 사람 캐릭터 없음 - 이동하지 않음");
+  }
+
+  // 텍스트 갱신
+  document.getElementById("arFullText").innerHTML =
+    "여기는 복도각입니다.<br>경근당과 옥첩당을 연결하는 통로죠.<br><br>" +
+    "왕족들이 이 복도를 지나면서<br> 어떤 대화를 나누었을까요?<br>" +
+    "AR 카메라로 복도각을 촬영해<br> 왕족이 나눈 대화를 찾아보세요.";
+
+  characterClickCount++;
+});
+
+
+// ✅ 지도 버튼 토글 기능
+let isMapVisible = false;
+
+document.getElementById("mapToggleBtn").addEventListener("click", () => {
+  isMapVisible = !isMapVisible;
+  document.getElementById("miniMapBox").style.display = isMapVisible ? "block" : "none";
+});
+// 동물 캐릭터 클릭 시 → 챗봇 화면으로 전환
+document.getElementById("arCharacter").addEventListener("click", () => {
+  document.getElementById("arScreen").style.display = "none";
+  document.getElementById("chatbotScreen").style.display = "block";
+});
+
+// 챗봇 뒤로가기 버튼 → 다시 AR 화면으로
+document.getElementById("chatBackBtn").addEventListener("click", () => {
+  document.getElementById("chatbotScreen").style.display = "none";
+  document.getElementById("arScreen").style.display = "block";
+});
+window.addEventListener('DOMContentLoaded', () => {
+      document.querySelector("#menuScreen").style.display = "block";
+      document.querySelector("#screen1").style.display = "none";
+      document.querySelector("#screen2").style.display = "none";
+      document.querySelector("#screen3").style.display = "none";
+      document.querySelector("#screen4").style.display = "none";
+      document.querySelector("#arScreen").style.display = "none";
+    });
+
+    function goToScreen4() {
+      document.querySelector("#screen3").style.display = "none";
+      document.querySelector("#screen4").style.display = "none";
+    }
+
+    function goToARScreen() {
+      document.querySelector("#screen4").style.display = "none";
+      document.querySelector("#arScreen").style.display = "none";
+    }
+
+    document.querySelector(".button").addEventListener("click", goToScreen4);
+
+    document.getElementById("backToScreen3").addEventListener("click", () => {
+      document.getElementById("screen4").style.display = "none";
+      document.getElementById("screen3").style.display = "none";
+    });
+    function goToARScreen() {
+      document.querySelector("#arScree4").style.display = "none";
+      document.querySelector("#collectionScreen").style.display = "none";
+    }
+
+  // ✅ 수호령 → 메뉴로 돌아가기
+  document.getElementById("collectionBackBtn").addEventListener("click", () => {
+    document.getElementById("collectionScreen").style.display = "none";
+    document.getElementById("menuScreen").style.display = "block";
+  });
+
+
+
+
+
+
+
+
+  </script>
+</body>
+</html>
